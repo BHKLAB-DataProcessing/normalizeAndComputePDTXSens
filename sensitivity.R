@@ -70,6 +70,10 @@ dose_viability <- dose_viability[, -c(1, 2)]
 dose <- as.matrix(dose_viability[, 6:10])
 viability <- as.matrix(dose_viability[, 1:5])
 
+dose <- dose[,seq(ncol(dose), 1)]
+viability <- viability[,seq(ncol(viability), 1)]
+
+
 raw <- array(c(dose, viability), dim=c(2550, 5, 2),
              dimnames=list(rownames(dose_viability),
                            sprintf("doses%d", seq(1, 5)),
@@ -101,7 +105,7 @@ recomputed <- PharmacoGx:::.calculateFromRaw(raw)
 parTable <- do.call(rbind,recomputed[[3]])
 # print(head(rownames(parTable)))
 # print(str(recomputed[[3]]))
-profiles <- cbind("aac_recomputed" = as.numeric(unlist(recomputed[[1]]))/100, 
+profiles <- data.frame("aac_recomputed" = as.numeric(unlist(recomputed[[1]]))/100, 
         "ic50_recomputed" = as.numeric(unlist(recomputed[[2]])), 
         "HS" = as.numeric(unlist(parTable[,1])),
         "E_inf" = as.numeric(unlist(parTable[,2])),
@@ -118,7 +122,7 @@ published <- published[rownames(info), ]
 
 profiles$auc_published <- published$AUC
 
-profiles$ic50_published <- published$iC50
+profiles$ic50_published <- as.numeric(published$iC50)
 
 
 
