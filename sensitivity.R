@@ -1,12 +1,11 @@
 library(PharmacoGx)
 library(data.table)
 
-##this shoudl be changed to a pfs dir
 input.dir <- "/pfs/downloadPDTXPublished/"
-
-
-## same as above, needs to be changed
 output.dir <- "/pfs/out/"
+
+# input.dir <- "~/Documents/pfs/downloadPDTXPublished/"
+# output.dir <- "~/Documents/pfs/normalizeAndComputePDTXSens/"
 
 
 raw_drug <- data.frame(fread(file.path(input.dir,"RawDataDrugsSingleAgents.txt")))
@@ -30,12 +29,8 @@ info <- data.frame(cellid=cellid, drugid=x$Group.2, nbr.conc.tested=x$num,
                    Dose1.uM=x$D1_CONC, Dose2.uM=x$D2_CONC, Dose3.uM=x$D3_CONC,
                    Dose4.uM=x$D4_CONC, Dose5.uM=x$D5_CONC)
 rownames(info) <- paste("drugid", info$drugid, info$cellid, sep="_")
+
 saveRDS(info, file=file.path(output.dir,"info.rds"))
-
-
-
-
-
 
 raw_drug <-  data.frame(fread(file.path(input.dir,"RawDataDrugsSingleAgents.txt")))
 raw_drug <- raw_drug[, -c(1, 3)]
@@ -53,17 +48,6 @@ med_intensity <- cbind(med_intensity, info[, 4:8])
 rownames(med_intensity) <- paste("drugid", med_intensity$Group.2, med_intensity$Group.1, sep="_")
 saveRDS(med_intensity, file.path(output.dir,"dose_viability.rds"))
 
-
-
-
-
-
-
-
-
-
-
-
 dose_viability <- med_intensity
 dose_viability <- dose_viability[, -c(1, 2)]
 
@@ -78,11 +62,8 @@ raw <- array(c(dose, viability), dim=c(2550, 5, 2),
              dimnames=list(rownames(dose_viability),
                            sprintf("doses%d", seq(1, 5)),
                            c("Dose", "Viability")))
+
 saveRDS(raw, file=file.path(output.dir,"raw.rds"))
-
-
-
-
 
 # ic50_recomputed <- c()
 # for (i in 1:nrow(med_intensity)) {
@@ -123,9 +104,6 @@ published <- published[rownames(info), ]
 profiles$auc_published <- published$AUC
 
 profiles$ic50_published <- as.numeric(published$iC50)
-
-
-
 
 saveRDS(profiles, file=file.path(output.dir,"profiles.rds"))
 
