@@ -2,11 +2,11 @@ library(PharmacoGx)
 library(data.table)
 
 ##this shoudl be changed to a pfs dir
-input.dir <- "~/Data/PDTX/"
+input.dir <- "/pfs/downloadPDTXPublished/"
 
 
 ## same as above, needs to be changed
-output.dir <- input.dir
+output.dir <- "/pfs/out/"
 
 
 raw_drug <- data.frame(fread(file.path(input.dir,"RawDataDrugsSingleAgents.txt")))
